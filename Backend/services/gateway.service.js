@@ -14,6 +14,7 @@ module.exports = {
       app.get("/update", this.update);
       app.get("/list", this.list);
       app.get("/delete", this.delete);
+      app.get("/ip", this.ip);
     },
     ping(req, res) {
       return Promise.resolve()
@@ -62,6 +63,16 @@ module.exports = {
       return Promise.resolve()
         .then(() => {
           return this.broker.call("webhooks.delete", { Id }).then((data) => {
+            res.send(data);
+          });
+        })
+        .catch(this.handleErr(res));
+    },
+    ip(req, res) {
+      const ipAddress = req.connection.remoteAddress;
+      return Promise.resolve()
+        .then(() => {
+          return this.broker.call("webhooks.ip", { ipAddress }).then((data) => {
             res.send(data);
           });
         })

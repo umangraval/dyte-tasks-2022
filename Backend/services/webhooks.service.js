@@ -32,6 +32,14 @@ module.exports = {
     delete(ctx) {
       const { Id } = ctx.params;
       return Promise.resolve({ msg: "Deleted webhook" });
+    },
+    trigger(ctx) {
+      const { ipAddress } = ctx.params;
+      const data = {
+        ipAddress,
+        timestamp: Math.round((new Date()).getTime() / 1000)
+      };
+      return Promise.resolve({ msg: "Trigger webhook" });
     }
   }
 };
