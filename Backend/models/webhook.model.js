@@ -1,9 +1,9 @@
 "use strict";
 
-let mongoose = require("mongoose");
-let Schema = mongoose.Schema;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-let WebhookSchema = new Schema({
+const WebhookSchema = new Schema({
 	targetUrl: {
 		type: String,
 		trim: true,

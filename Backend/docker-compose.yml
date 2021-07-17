@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+  rabbitmq:
+    image: rabbitmq:3.7-alpine
+    networks:
+      - internal
+  
+  gateway:
+    build:
+      context: .
+    image: service-gateway
+    env_file: .env
+    environment:
+      NODEID: "node-gateway"
+      SERVICES: gateway
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on: 
+      - mongo
+      - rabbitmq
+    networks:
+      - internal
+
+  webhooks:
+    build:
+      context: .
+    env_file: .env
+    environment:
+      NODEID: "node-webhooks"
+      SERVICES: webhooks
+    depends_on: 
+      - gateway
+      - rabbitmq
+    networks:
+      - internal
+
+  mongo:
+    image: "mongo"
+    container_name: "mongo"
+    ports:
+      - "27100:27017"
+    networks:
+      - internal
+
+networks:
+  internal:
