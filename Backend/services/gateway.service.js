@@ -14,7 +14,7 @@ module.exports = {
       app.get("/update", this.update);
       app.get("/list", this.list);
       app.get("/delete", this.delete);
-      app.get("/ip", this.ip);
+      app.post("/ip", this.ip);
     },
     ping(req, res) {
       return Promise.resolve()
@@ -72,7 +72,7 @@ module.exports = {
       const ipAddress = req.connection.remoteAddress;
       return Promise.resolve()
         .then(() => {
-          return this.broker.call("webhooks.ip", { ipAddress }).then((data) => {
+          return this.broker.call("webhooks.trigger", { ipAddress }).then((data) => {
             res.send(data);
           });
         })

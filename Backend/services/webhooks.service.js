@@ -1,5 +1,7 @@
 "use strict";
 const crypto = require("crypto");
+// const axios = require("axios");
+const api = require("../util/API");
 
 module.exports = {
   name: "webhooks",
@@ -8,13 +10,10 @@ module.exports = {
       return Promise.resolve({ msg: "Pong" });
     },
     register(ctx) {
-      const Id = crypto
-        .randomBytes(20)
-        .toString("hex")
-        .substr(0, 7);
+      const Id = crypto.randomBytes(20).toString("hex").substr(0, 7);
       const data = {
         Id: Id,
-        targetUrl: ctx.params.url
+        targetUrl: ctx.params.url,
       };
       return Promise.resolve({ Id, msg: "Registered webhook" });
     },
@@ -25,7 +24,7 @@ module.exports = {
       const { Id, newTargetUrl } = ctx.params;
       const data = {
         Id: Id,
-        targetUrl: newTargetUrl
+        targetUrl: newTargetUrl,
       };
       return Promise.resolve({ msg: "Updated webhook" });
     },
@@ -33,13 +32,25 @@ module.exports = {
       const { Id } = ctx.params;
       return Promise.resolve({ msg: "Deleted webhook" });
     },
-    trigger(ctx) {
+    async trigger(ctx) {
       const { ipAddress } = ctx.params;
       const data = {
         ipAddress,
-        timestamp: Math.round((new Date()).getTime() / 1000)
+        timestamp: Math.round(new Date().getTime() / 1000),
       };
+
+      // sample
+      const urls = [
+        api.get("https://api.github.com/users/MaksymRudnyi"),
+        api.get("https://api.github.com/users/*"),
+        api.get("https://api.github.com/users/taylorotwell"),
+      ];
+      const results = await Promise.all(urls.map((p) => p.catch((e) => e)));
+      const validResults = results.filter(
+        (result) => !(result instanceof Error)
+      );
+      console.log(validResults);
       return Promise.resolve({ msg: "Trigger webhook" });
-    }
-  }
+    },
+  },
 };
