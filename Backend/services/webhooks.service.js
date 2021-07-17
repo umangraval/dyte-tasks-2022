@@ -103,23 +103,34 @@ module.exports = {
       },
       async handler(ctx) {
         const { ipAddress } = ctx.params;
-        const data = {
-          ipAddress,
-          timestamp: Math.round(new Date().getTime() / 1000),
-        };
+        try {
+          const data = {
+            ipAddress,
+            timestamp: Math.round(new Date().getTime() / 1000),
+          };
 
-        // sample
-        const urls = [
-          api.get("https://api.github.com/users/MaksymRudnyi"),
-          api.get("https://api.github.com/users/*"),
-          api.get("https://api.github.com/users/taylorotwell"),
-        ];
-        const results = await Promise.all(urls.map((p) => p.catch((e) => e)));
-        const validResults = results.filter(
-          (result) => !(result instanceof Error)
-        );
-        console.log(validResults);
-        return Promise.resolve({ msg: "Trigger webhook" });
+          const urls = this.transform(await this.adapter.find({}));
+
+          for (var i = 0; i < urls.length; i++) {
+            urls[i] = api.post(urls[i].targetUrl, data, {
+              headers: { "Content-Type": "application/json" },
+            });
+          }
+
+          const results = await Promise.all(urls.map((p) => p.catch((e) => e)));
+          const validResults = results.filter(
+            (result) => !(result instanceof Error)
+          );
+          return Promise.resolve({
+            success_requests: validResults.length,
+            total_urls: urls.length,
+            msg: "Trigger webhook",
+          });
+        } catch (err) {
+          return Promise.reject(
+            new MoleculerClientError({ msg: "Server Error" }, 500)
+          );
+        }
       },
     },
   },

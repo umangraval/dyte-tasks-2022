@@ -14,7 +14,7 @@ module.exports = {
       app.put("/update/:Id", this.update);
       app.get("/list", this.list);
       app.delete("/delete/:Id", this.delete);
-      app.post("/ip", this.ip);
+      app.get("/ip", this.ip);
     },
     ping(req, res) {
       return Promise.resolve()
