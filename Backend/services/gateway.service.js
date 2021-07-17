@@ -18,7 +18,7 @@ module.exports = {
     },
     ping(req, res) {
       return Promise.resolve()
-        .then(() => this.broker.call('webhooks.testing').then((data) => {
+        .then(() => this.broker.call('webhooks.testing').then((data) => { // action call
           res.send(data);
         }))
         .catch(this.handleErr(res));
@@ -60,7 +60,7 @@ module.exports = {
         .catch(this.handleErr(res));
     },
     ip(req, res) {
-      const ipAddress = req.connection.remoteAddress;
+      const ipAddress = req.connection.remoteAddress; // get ip
       return Promise.resolve()
         .then(() => this.broker
           .call('webhooks.trigger', { ipAddress })
@@ -71,7 +71,7 @@ module.exports = {
     },
     handleErr(res) {
       return (err) => {
-        res.status(err.code || 500).send(err.message);
+        res.status(err.code || 500).send({ msg: 'Server Error'});
       };
     },
   },
@@ -87,14 +87,14 @@ module.exports = {
     this.app = app;
   },
   started() {
-    this.app.listen(Number(this.settings.port), (err) => {
+    this.app.listen(Number(this.settings.port), (err) => { // start server
       if (err) return this.broker.fatal(err);
       this.logger.info(`Server started on port ${this.settings.port}`);
     });
   },
   stopped() {
     if (this.app.listening) {
-      this.app.close((err) => {
+      this.app.close((err) => { // close server
         if (err) return this.logger.error('Server closed', err);
         this.logger.info('Server stopped!');
       });

@@ -6,10 +6,9 @@ const Webhook = require('../models/webhook.model');
 
 module.exports = {
   name: 'webhooks',
-  mixins: [DbService(Webhook)],
+  mixins: [DbService(Webhook)], // db-adapter
   settings: {
-    /** Public fields */
-    fields: ['_id', 'targetUrl'],
+    fields: ['_id', 'targetUrl'], // public fields
   },
   actions: {
     testing() {

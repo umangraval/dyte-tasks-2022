@@ -9,6 +9,7 @@ module.exports = function (collection) {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }),
+    // model assigned
     model: collection,
   };
 };
