@@ -1,21 +1,32 @@
 "use strict";
 const crypto = require("crypto");
-// const axios = require("axios");
+const {} = require("axios");
 const api = require("../util/API");
+const DbService = require("../mixins/db.mixin");
+const Webhook = require("../models/webhook.model");
 
 module.exports = {
   name: "webhooks",
+  mixins: [DbService(Webhook)],
+  settings: {
+    /** Public fields */
+    fields: ["_id", "targetUrl"],
+  },
   actions: {
     testing(ctx) {
       return Promise.resolve({ msg: "Pong" });
     },
-    register(ctx) {
-      const Id = crypto.randomBytes(20).toString("hex").substr(0, 7);
-      const data = {
-        Id: Id,
-        targetUrl: ctx.params.url,
-      };
-      return Promise.resolve({ Id, msg: "Registered webhook" });
+    register: {
+      params: {
+        targetUrl: { type: "string" },
+      },
+      async handler(ctx) {
+        const data = {
+          targetUrl: ctx.params.targetUrl,
+        };
+        const doc = await this.adapter.insert(data);
+        return Promise.resolve({ Id: doc._id, msg: "Registered webhook" });
+      },
     },
     list(ctx) {
       return Promise.resolve({ msg: "list webhooks" });

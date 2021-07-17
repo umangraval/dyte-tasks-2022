@@ -11,9 +11,9 @@ module.exports = {
     initRoutes(app) {
       app.get("/", this.ping);
       app.post("/register", this.register);
-      app.get("/update", this.update);
+      app.put("/update", this.update);
       app.get("/list", this.list);
-      app.get("/delete", this.delete);
+      app.delete("/delete", this.delete);
       app.post("/ip", this.ip);
     },
     ping(req, res) {
@@ -30,7 +30,7 @@ module.exports = {
       return Promise.resolve()
         .then(() => {
           return this.broker
-            .call("webhooks.register", { url: targetUrl })
+            .call("webhooks.register", { targetUrl })
             .then((data) => {
               res.send(data);
             });
