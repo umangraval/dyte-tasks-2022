@@ -1,8 +1,8 @@
 const axios = require("axios");
 const axiosRetry = require("axios-retry");
 
-const MAX_REQUESTS_COUNT = 10;
-const INTERVAL_MS = 1;
+const MAX_REQUESTS_COUNT = 100;
+const INTERVAL_MS = 0;
 let PENDING_REQUESTS = 0;
 
 // create new axios instance

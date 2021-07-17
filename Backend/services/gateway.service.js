@@ -1,12 +1,12 @@
 "use strict";
 const express = require("express");
-const bodyParser = require("body-parser");
 
 module.exports = {
   name: "gateway",
   settings: {
     port: process.env.PORT || 3000,
   },
+
   methods: {
     initRoutes(app) {
       app.get("/", this.ping);
@@ -89,7 +89,12 @@ module.exports = {
   },
   created() {
     const app = express();
-    app.use(bodyParser());
+    app.use(express.json());
+    app.use(
+      express.urlencoded({
+        extended: true,
+      })
+    );
     this.initRoutes(app);
     this.app = app;
   },
