@@ -11,9 +11,9 @@ module.exports = {
     initRoutes(app) {
       app.get("/", this.ping);
       app.post("/register", this.register);
-      app.put("/update", this.update);
+      app.put("/update/:Id", this.update);
       app.get("/list", this.list);
-      app.delete("/delete", this.delete);
+      app.delete("/delete/:Id", this.delete);
       app.post("/ip", this.ip);
     },
     ping(req, res) {
@@ -38,11 +38,12 @@ module.exports = {
         .catch(this.handleErr(res));
     },
     update(req, res) {
-      const payload = req.body;
+      const { Id } = req.params;
+      const { newTargetUrl } = req.body;
       return Promise.resolve()
         .then(() => {
           return this.broker
-            .call("webhooks.update", { payload })
+            .call("webhooks.update", { Id, newTargetUrl })
             .then((data) => {
               res.send(data);
             });
@@ -59,7 +60,7 @@ module.exports = {
         .catch(this.handleErr(res));
     },
     delete(req, res) {
-      const { Id } = req.body;
+      const { Id } = req.params;
       return Promise.resolve()
         .then(() => {
           return this.broker.call("webhooks.delete", { Id }).then((data) => {
@@ -72,9 +73,11 @@ module.exports = {
       const ipAddress = req.connection.remoteAddress;
       return Promise.resolve()
         .then(() => {
-          return this.broker.call("webhooks.trigger", { ipAddress }).then((data) => {
-            res.send(data);
-          });
+          return this.broker
+            .call("webhooks.trigger", { ipAddress })
+            .then((data) => {
+              res.send(data);
+            });
         })
         .catch(this.handleErr(res));
     },
