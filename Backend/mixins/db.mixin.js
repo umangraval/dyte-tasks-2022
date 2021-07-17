@@ -1,9 +1,6 @@
-"use strict";
-const path = require("path");
-const mkdir = require("mkdirp").sync;
-const DbService = require("moleculer-db");
-const MongooseAdapter = require("moleculer-db-adapter-mongoose");
-const { MONGO_URI } = require("../config/config");
+const DbService = require('moleculer-db');
+const MongooseAdapter = require('moleculer-db-adapter-mongoose');
+const { MONGO_URI } = require('../config/config');
 
 module.exports = function (collection) {
   return {
